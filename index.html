@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Perpustakaan</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #7faaff 0%, #4b6cb7 100%);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        header {
+            background-color: #35495e;
+            text-align: center;
+            padding: 40px;
+            border-bottom: 5px solid #42b983;
+        }
+
+        header h1 {
+            font-size: 2.8em;
+            color: white;
+            margin: 0;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        main {
+            padding: 30px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 0,8em;
+            margin-bottom: 15px;
+            color: #35495e;
+            text-align: center;
+        }
+
+        form label {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: block;
+            color: #35495e;
+        }
+
+        form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1.1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        form input:focus {
+            border-color: #42b983;
+            outline: none;
+        }
+
+        form button {
+            background-color: #42b983;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        form button:hover {
+            background-color: #388e3c;
+        }
+
+        #result {
+            margin-top: 30px;
+        }
+
+        h3 {
+            font-size: 1em;
+            color: #35495e;
+        }
+
+        #listPeminjaman {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #listPeminjaman li {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        #listPeminjaman li:hover {
+            transform: scale(1.03);
+        }
+
+        button.delete {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button.delete:hover {
+            background-color: #d32f2f;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1px;
+            background-color: #35495e;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        /* Media Query for mobile responsiveness */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            form input, form button {
+                font-size: 1em;
+            }
+        }
+    </style>
+    <script>
+        // Array to hold borrowed data
+        let peminjamanArray = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle form submission
+            document.getElementById('formPeminjaman').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent form from reloading the page
+                
+                // Get form input values
+                const nama = document.getElementById('nama').value;
+                const tanggalPinjam = document.getElementById('tanggalPinjam').value;
+                const tanggalKembali = document.getElementById('tanggalKembali').value;
+
+                // Create an object to hold the input data
+                const peminjamanData = {
+                    nama: nama,
+                    tanggalPinjam: tanggalPinjam,
+                    tanggalKembali: tanggalKembali
+                };
+
+                // Add the data to the array
+                peminjamanArray.push(peminjamanData);
+
+                // Display the updated list of borrowed data
+                displayPeminjamanList();
+                
+                // Clear the form
+                document.getElementById('formPeminjaman').reset();
+            });
+        });
+
+        // Function to display the list of borrowed books
+        function displayPeminjamanList() {
+            const listPeminjaman = document.getElementById('listPeminjaman');
+            listPeminjaman.innerHTML = ''; // Clear the list before adding new data
+
+            peminjamanArray.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${item.nama} meminjam pada ${item.tanggalPinjam} dan harus mengembalikan pada ${item.tanggalKembali}`;
+
+                // Create delete button for each list item
+                const deleteButton = document.createElement('button');
+                deleteButton.classList.add('delete');
+                deleteButton.textContent = 'Hapus';
+                deleteButton.onclick = () => deletePeminjaman(index);
+
+                // Append delete button to the list item
+                listItem.appendChild(deleteButton);
+
+                // Append list item to the list
+                listPeminjaman.appendChild(listItem);
+            });
+        }
+
+        // Function to delete an entry from the list
+        function deletePeminjaman(index) {
+            // Remove the item from the array
+            peminjamanArray.splice(index, 1);
+
+            // Update the list after deletion
+            displayPeminjamanList();
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Daftar Perpustakaan</h1>
+    </header>
+    <main>
+        <div class="form-container">
+            <h2>Formulir Peminjaman</h2>
+            <form id="formPeminjaman">
+                <label for="nama">Nama Peminjam:</label>
+                <input type="text" id="nama" name="nama" required><br>
+
+                <label for="tanggalPinjam">Tanggal Peminjaman:</label>
+                <input type="date" id="tanggalPinjam" name="tanggalPinjam" required><br>
+
+                <label for="tanggalKembali">Tanggal Pengembalian:</label>
+                <input type="date" id="tanggalKembali" name="tanggalKembali" required><br>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div id="result">
+            <h3>Daftar Peminjaman:</h3>
+            <ul id="listPeminjaman"></ul>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Daftar Perpustakaan</p>
+    </footer>
+</body>
+</html>
